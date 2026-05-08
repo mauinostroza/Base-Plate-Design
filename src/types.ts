@@ -96,3 +96,33 @@ export const STEEL_GRADES: SteelGrade[] = [
   { name: "A345ES", fy: 345, fu: 480, e: 210000, standard: "NCh 203" },
   { name: "Gr.50", fy: 345, fu: 450, e: 200000, standard: "AISC" },
 ];
+
+export interface ConcreteData {
+  fck: number;
+  width: number;
+  height: number;
+  depth: number;
+}
+
+export type LoadComboType = 'ASD' | 'LRFD';
+
+export interface LoadCombination {
+  name: string;
+  type: LoadComboType;
+  factors: {
+    dead: number;
+    live: number;
+    equipment: number;
+    seismic: number;
+    wind: number;
+  };
+}
+
+export const DEFAULT_COMBOS: LoadCombination[] = [
+  { name: 'ASD-1 (D+E)', type: 'ASD', factors: { dead: 1.0, live: 0.0, equipment: 0.0, seismic: 1.0, wind: 0.0 } },
+  { name: 'ASD-2 (D+L+Eq)', type: 'ASD', factors: { dead: 1.0, live: 1.0, equipment: 1.0, seismic: 0.0, wind: 0.0 } },
+  { name: 'ASD-3 (D+L)', type: 'ASD', factors: { dead: 1.0, live: 1.0, equipment: 0.0, seismic: 0.0, wind: 0.0 } },
+  { name: 'LRFD-1 (1.4D)', type: 'LRFD', factors: { dead: 1.4, live: 0.0, equipment: 0.0, seismic: 0.0, wind: 0.0 } },
+  { name: 'LRFD-2 (1.2D+1.6L+0.5Eq)', type: 'LRFD', factors: { dead: 1.2, live: 1.6, equipment: 0.5, seismic: 0.0, wind: 0.0 } },
+  { name: 'LRFD-3 (1.2D+1.0E+0.5L)', type: 'LRFD', factors: { dead: 1.2, live: 0.5, equipment: 0.0, seismic: 1.0, wind: 0.0 } },
+];

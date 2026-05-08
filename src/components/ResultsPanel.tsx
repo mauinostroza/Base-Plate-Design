@@ -22,6 +22,7 @@ export const ResultsPanel: React.FC<ResultsPanelProps> = ({ results, loads, upda
               <LoadInput label={`Mx (${results.units.moment})`} value={loads.mx} onChange={(v) => updateLoads({ mx: v })} />
               <LoadInput label={`My (${results.units.moment})`} value={loads.my} onChange={(v) => updateLoads({ my: v })} />
               <LoadInput label={`Vx (${results.units.force})`} value={loads.vx} onChange={(v) => updateLoads({ vx: v })} />
+              <LoadInput label={`Vy (${results.units.force})`} value={loads.vy} onChange={(v) => updateLoads({ vy: v })} />
             </div>
           </div>
 
@@ -83,7 +84,7 @@ const LoadInput: React.FC<{ label: string, value: number, onChange: (v: number) 
       type="number" 
       className="w-full text-sm font-mono bg-transparent outline-none focus:text-blue-600"
       value={value} 
-      onChange={(e) => onChange(parseFloat(e.target.value) || 0)} 
+      onChange={(e) => onChange(Math.max(0, parseFloat(e.target.value) || 0))} 
     />
   </div>
 );

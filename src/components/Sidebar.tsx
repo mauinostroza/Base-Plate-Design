@@ -87,11 +87,11 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
           <SectionLabel label="Placa Base" />
           <div className="grid grid-cols-2 gap-2">
-            <Input label={`Ancho (${unitSystem === 'METRIC' ? 'mm' : 'in'})`} value={plate.width} onChange={(v) => updatePlate({ width: v })} />
-            <Input label={`Largo (${unitSystem === 'METRIC' ? 'mm' : 'in'})`} value={plate.height} onChange={(v) => updatePlate({ height: v })} />
+            <Input label={`Ancho (${unitSystem === 'METRIC' ? 'mm' : 'in'})`} value={plate.width} onChange={(v) => updatePlate({ width: v })} min={100} />
+            <Input label={`Largo (${unitSystem === 'METRIC' ? 'mm' : 'in'})`} value={plate.height} onChange={(v) => updatePlate({ height: v })} min={100} />
           </div>
           <div className="grid grid-cols-2 gap-2">
-            <Input label={`Espesor (${unitSystem === 'METRIC' ? 'mm' : 'in'})`} value={plate.thickness} onChange={(v) => updatePlate({ thickness: v })} />
+            <Input label={`Espesor (${unitSystem === 'METRIC' ? 'mm' : 'in'})`} value={plate.thickness} onChange={(v) => updatePlate({ thickness: v })} min={5} />
             <div>
                 <label className="text-[9px] text-gray-400 uppercase font-bold">Acero</label>
                 <select 
@@ -115,12 +115,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
           <SectionLabel label="Pernos de Anclaje" />
           <div className="p-3 bg-gray-50 rounded border border-gray-100 space-y-4">
             <div className="grid grid-cols-2 gap-2">
-                <Input label="Cant. X" value={bolts.countX} onChange={(v) => updateBolts({ countX: v })} />
-                <Input label="Cant. Y" value={bolts.countY} onChange={(v) => updateBolts({ countY: v })} />
+                <Input label="Cant. X" value={bolts.countX} onChange={(v) => updateBolts({ countX: v })} min={1} />
+                <Input label="Cant. Y" value={bolts.countY} onChange={(v) => updateBolts({ countY: v })} min={1} />
             </div>
             <div className="grid grid-cols-2 gap-2">
-               <Input label={`S_x (mm)`} value={bolts.spacingX} onChange={(v) => updateBolts({ spacingX: v })} />
-               <Input label={`S_y (mm)`} value={bolts.spacingY} onChange={(v) => updateBolts({ spacingY: v })} />
+               <Input label={`S_x (mm)`} value={bolts.spacingX} onChange={(v) => updateBolts({ spacingX: v })} min={50} />
+               <Input label={`S_y (mm)`} value={bolts.spacingY} onChange={(v) => updateBolts({ spacingY: v })} min={50} />
             </div>
           </div>
         </div>
@@ -151,9 +151,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
                      <option value="FULL">Contorno Total</option>
                    </select>
                 </div>
-                <Input label="Altura (mm)" value={anchorChair.height} onChange={(v) => setAnchorChair({ ...anchorChair, height: v })} />
+                <Input label="Altura (mm)" value={anchorChair.height} onChange={(v) => setAnchorChair({ ...anchorChair, height: v })} min={10} />
                 <div className="grid grid-cols-2 gap-2">
-                    <Input label="e (mm)" value={anchorChair.thickness} onChange={(v) => setAnchorChair({ ...anchorChair, thickness: v })} />
+                    <Input label="e (mm)" value={anchorChair.thickness} onChange={(v) => setAnchorChair({ ...anchorChair, thickness: v })} min={5} />
                     <Input label="w (mm)" value={anchorChair.width} onChange={(v) => setAnchorChair({ ...anchorChair, width: v })} />
                 </div>
              </div>
@@ -187,8 +187,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
                    </select>
                 </div>
                 <div className="grid grid-cols-2 gap-2">
-                  <Input label="e (mm)" value={stiffeners.thickness} onChange={(v) => setStiffeners({ ...stiffeners, thickness: v })} />
-                  <Input label="h (mm)" value={stiffeners.height} onChange={(v) => setStiffeners({ ...stiffeners, height: v })} />
+                  <Input label="e (mm)" value={stiffeners.thickness} onChange={(v) => setStiffeners({ ...stiffeners, thickness: v })} min={5} />
+                  <Input label="h (mm)" value={stiffeners.height} onChange={(v) => setStiffeners({ ...stiffeners, height: v })} min={10} />
                 </div>
              </div>
           )}
@@ -213,16 +213,21 @@ interface InputProps {
   label: string;
   value: number;
   onChange: (val: number) => void;
+  min?: number;
 }
 
-const Input: React.FC<InputProps> = ({ label, value, onChange }) => (
+const Input: React.FC<InputProps> = ({ label, value, onChange, min }) => (
   <div>
     <label className="text-[9px] text-gray-400 uppercase font-bold tracking-tight mb-1 block">{label}</label>
     <input 
       type="number"
       className="w-full border border-gray-100 rounded p-2 text-xs bg-white focus:outline-none focus:ring-1 focus:ring-blue-600 font-mono shadow-inner" 
       value={value}
-      onChange={(e) => onChange(parseFloat(e.target.value) || 0)}
+      min={min}
+      onChange={(e) => {
+        const val = parseFloat(e.target.value) || 0;
+        onChange(min !== undefined ? Math.max(min, val) : val);
+      }}
     />
   </div>
 );

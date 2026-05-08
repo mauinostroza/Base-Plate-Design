@@ -15,7 +15,8 @@ export function calculateResults(
   unitSystem: UnitSystem,
   columnHeight: number,
   chair: AnchorChair,
-  stiffeners: StiffenerConfig // Added
+  stiffeners: StiffenerConfig, // Added
+  concreteFc: number = 25
 ): CalculationResult {
   // 1. Unified SI Conversion (N, mm)
   let f_scale = unitSystem === "METRIC" ? TONF_TO_N : KIP_TO_N;
@@ -79,7 +80,13 @@ export function calculateResults(
   // 6. Rotational Stiffness (Sj)
   const Sj_ini = (Mx !== 0) ? (Mx / 0.0005) * stiffnessBoost : 0;
 
-  const isPass = plateStress < plate.material.fy && concretePressure < 18 && maxTension_N < 250000;
+  // 7. Dynamic Limits
+  const concreteLimit = 0.5525 * concreteFc;
+  const boltDia = bolts.diameter;
+  const boltArea = Math.PI * (boltDia / 2) ** 2;
+  const boltLimit = boltArea * 400;
+
+  const isPass = plateStress < plate.material.fy && concretePressure < concreteLimit && maxTension_N < boltLimit;
 
   const units = unitSystem === "METRIC" ? 
     { force: "tonf", moment: "tonf-m", stress: "MPa", length: "mm", stiffness: "tonf-m/rad" } :
@@ -101,4 +108,26 @@ export function calculateResults(
       message: bucklingUtilization > 100 ? "Falla por pandeo local detectada." : isPass ? "Análisis avanzado confirma estabilidad." : "Falla de componente detectada."
     }
   };
+}
+
+export function calculateWithCombo(
+  plate: BasePlate,
+  bolts: BoltConfiguration,
+  loads: Loads,
+  unitSystem: UnitSystem,
+  columnHeight: number,
+  chair: AnchorChair,
+  stiffeners: StiffenerConfig,
+  combo: { factors: { dead: number; live: number; equipment: number; seismic: number } },
+  concreteFc: number = 25
+): CalculationResult {
+  const sumFactor = combo.factors.dead + combo.factors.live + combo.factors.equipment + combo.factors.seismic;
+  const factored: Loads = {
+    n: loads.n * sumFactor,
+    mx: loads.mx * sumFactor,
+    my: loads.my * sumFactor,
+    vx: loads.vx * sumFactor,
+    vy: loads.vy * sumFactor,
+  };
+  return calculateResults(plate, bolts, factored, unitSystem, columnHeight, chair, stiffeners, concreteFc);
 }

@@ -194,28 +194,43 @@ export const ThreeView: React.FC<ThreeViewProps> = ({ plate, bolts, concrete, co
       }
 
       chairPositions.forEach(pos => {
-        const stiffW = anchorChair.width;
+        const stiffW = anchorChair.depth;
         const stiffT = anchorChair.thickness;
         const stiffH = anchorChair.height;
         
         // Two side stiffeners for the chair
-        const stiffGeom = new THREE.BoxGeometry(stiffT, stiffH, stiffW);
-        const offset = bolts.diameter * 1.5;
-        
-        const s1 = new THREE.Mesh(stiffGeom, chairMat);
-        s1.position.set(pos.x - offset, stiffH/2 + plate.thickness, pos.z);
-        group.add(s1);
-
-        const s2 = new THREE.Mesh(stiffGeom, chairMat);
-        s2.position.set(pos.x + offset, stiffH/2 + plate.thickness, pos.z);
-        group.add(s2);
-
-        // Top Seat Plate (Should be visible now, with higher contrast)
+        const offset = anchorChair.width / 2;
         const topW = offset * 2.5;
-        const topGeom = new THREE.BoxGeometry(topW, stiffT, stiffW);
-        const top = new THREE.Mesh(topGeom, topPlateMat);
-        top.position.set(pos.x, anchorChair.height + plate.thickness + stiffT/2, pos.z);
-        group.add(top);
+        
+        if (chairPos === "INTERIOR") {
+          // INTERIOR: stiffeners run in X-direction (perpendicular to web)
+          const stiffGeom = new THREE.BoxGeometry(stiffW, stiffH, stiffT);
+          const s1 = new THREE.Mesh(stiffGeom, chairMat);
+          s1.position.set(pos.x, stiffH/2 + plate.thickness, pos.z - offset);
+          group.add(s1);
+          const s2 = new THREE.Mesh(stiffGeom, chairMat);
+          s2.position.set(pos.x, stiffH/2 + plate.thickness, pos.z + offset);
+          group.add(s2);
+          // Top plate rotated for INTERIOR
+          const topGeom = new THREE.BoxGeometry(stiffW, stiffT, topW);
+          const top = new THREE.Mesh(topGeom, topPlateMat);
+          top.position.set(pos.x, anchorChair.height + plate.thickness + stiffT/2, pos.z);
+          group.add(top);
+        } else {
+          // WING_FACES / FULL: stiffeners run in Z-direction (perpendicular to flange)
+          const stiffGeom = new THREE.BoxGeometry(stiffT, stiffH, stiffW);
+          const s1 = new THREE.Mesh(stiffGeom, chairMat);
+          s1.position.set(pos.x - offset, stiffH/2 + plate.thickness, pos.z);
+          group.add(s1);
+          const s2 = new THREE.Mesh(stiffGeom, chairMat);
+          s2.position.set(pos.x + offset, stiffH/2 + plate.thickness, pos.z);
+          group.add(s2);
+          // Top Seat Plate
+          const topGeom = new THREE.BoxGeometry(topW, stiffT, stiffW);
+          const top = new THREE.Mesh(topGeom, topPlateMat);
+          top.position.set(pos.x, anchorChair.height + plate.thickness + stiffT/2, pos.z);
+          group.add(top);
+        }
       });
     }
 

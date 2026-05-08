@@ -152,7 +152,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 <Input label="Altura (mm)" value={anchorChair.height} onChange={(v) => setAnchorChair({ ...anchorChair, height: v })} min={10} />
                 <div className="grid grid-cols-2 gap-2">
                     <Input label="e (mm)" value={anchorChair.thickness} onChange={(v) => setAnchorChair({ ...anchorChair, thickness: v })} min={5} />
-                    <Input label="w (mm)" value={anchorChair.width} onChange={(v) => setAnchorChair({ ...anchorChair, width: v })} />
+                    <Input label="Profundidad (mm)" value={anchorChair.depth} onChange={(v) => setAnchorChair({ ...anchorChair, depth: v })} min={20} />
+                </div>
+                <div className="grid grid-cols-2 gap-2">
+                    <Input label="Ancho entre alas (mm)" value={anchorChair.width} onChange={(v) => setAnchorChair({ ...anchorChair, width: v })} min={30} />
                 </div>
                 <div className="text-[8px] text-blue-500/70 italic font-medium leading-tight border-t border-blue-100/50 pt-2 mt-1">
                   ✓ La silla incluye stiffeners integrados en cada perno de anclaje

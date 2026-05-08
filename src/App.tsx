@@ -20,7 +20,8 @@ export default function App() {
     enabled: false,
     height: 150,
     thickness: 12,
-    width: 80,
+    depth: 80,
+    width: 50,
     position: "WING_FACES"
   });
 

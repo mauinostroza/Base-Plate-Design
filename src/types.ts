@@ -47,14 +47,15 @@ export interface Loads {
   vy: number; 
 }
 
-export type AnchorChairPosition = "WING_FACES" | "INTERIOR" | "FULL" | "NONE";
+export type AnchorChairPosition = "WING_FACES" | "INTERIOR" | "FULL";
 
 export interface AnchorChair {
   enabled: boolean;
-  height: number; 
-  thickness: number; 
+  height: number;
+  thickness: number;
+  depth: number;
   width: number;
-  position: AnchorChairPosition; // New
+  position: AnchorChairPosition;
 }
 
 export interface CalculationResult {

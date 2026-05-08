@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
-import { BasePlate, BoltConfiguration, ConcreteData, SteelProfile, AnchorChair, StiffenerConfig } from '../types';
+import { BasePlate, BoltConfiguration, ConcreteData, SteelProfile, AnchorChair } from '../types';
 
 interface ThreeViewProps {
   plate: BasePlate;
@@ -9,11 +9,10 @@ interface ThreeViewProps {
   concrete: ConcreteData;
   columnProfile: SteelProfile;
   anchorChair: AnchorChair;
-  stiffeners: StiffenerConfig;
   stressData?: number;
 }
 
-export const ThreeView: React.FC<ThreeViewProps> = ({ plate, bolts, concrete, columnProfile, anchorChair, stiffeners, stressData = 0 }) => {
+export const ThreeView: React.FC<ThreeViewProps> = ({ plate, bolts, concrete, columnProfile, anchorChair, stressData = 0 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const sceneRef = useRef<THREE.Scene | null>(null);
   const groupRef = useRef<THREE.Group | null>(null);
@@ -171,38 +170,6 @@ export const ThreeView: React.FC<ThreeViewProps> = ({ plate, bolts, concrete, co
     f2.position.set(0, colHeight / 2 + plate.thickness, -(columnProfile.h - columnProfile.tf) / 2);
     group.add(f2);
 
-    // Stiffeners (General Stiffenening)
-    if (stiffeners.enabled) {
-      const stiffMat = new THREE.MeshPhongMaterial({ color: 0x334155 });
-      const stiffH = stiffeners.height;
-      const stiffT = stiffeners.thickness;
-      
-      const posZ = (columnProfile.h / 2 - columnProfile.tf / 2);
-      
-      if (stiffeners.position === "OUTER") {
-         const geom = new THREE.BoxGeometry(columnProfile.b, stiffH, stiffT);
-         [posZ + 30, -(posZ + 30)].forEach(z => {
-            const s = new THREE.Mesh(geom, stiffMat);
-            s.position.set(0, stiffH/2 + plate.thickness, z);
-            group.add(s);
-         });
-      } else if (stiffeners.position === "INNER") {
-         const geom = new THREE.BoxGeometry(stiffT, stiffH, columnProfile.h - 2*columnProfile.tf);
-         const s1 = new THREE.Mesh(geom, stiffMat);
-         s1.position.set(0, stiffH/2 + plate.thickness, 0);
-         group.add(s1);
-      } else if (stiffeners.position === "FACES") {
-         const geom = new THREE.BoxGeometry(stiffT, stiffH, columnProfile.tf * 2);
-         [posZ, -posZ].forEach(z => {
-            [columnProfile.b/2 + stiffT/2, -(columnProfile.b/2 + stiffT/2)].forEach(x => {
-               const s = new THREE.Mesh(geom, stiffMat);
-               s.position.set(x, stiffH/2 + plate.thickness, z);
-               group.add(s);
-            });
-         });
-      }
-    }
-
     // Anchor Chair
     if (anchorChair.enabled) {
       const chairMat = new THREE.MeshPhongMaterial({ color: 0x94a3b8, shininess: 100 });
@@ -252,7 +219,7 @@ export const ThreeView: React.FC<ThreeViewProps> = ({ plate, bolts, concrete, co
       });
     }
 
-  }, [plate, bolts, concrete, columnProfile, anchorChair, stiffeners, stressData]);
+  }, [plate, bolts, concrete, columnProfile, anchorChair, stressData]);
 
   return (
     <div ref={containerRef} className="w-full h-full relative rounded-xl overflow-hidden bg-[#EDF1F5]">

@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { BasePlate, BoltConfiguration, Loads, STEEL_GRADES, SteelProfile, UnitSystem } from '../types';
+import React from 'react';
+import { BasePlate, BoltConfiguration, Loads, STEEL_GRADES, SteelProfile, UnitSystem, AnchorChair } from '../types';
 import { ALL_PROFILES } from '../lib/profiles';
 
 interface SidebarProps {
@@ -9,20 +9,18 @@ interface SidebarProps {
   unitSystem: UnitSystem;
   columnProfile: SteelProfile;
   anchorChair: AnchorChair;
-  stiffeners: StiffenerConfig;
   updatePlate: (p: Partial<BasePlate>) => void;
   updateBolts: (b: Partial<BoltConfiguration>) => void;
   updateLoads: (l: Partial<Loads>) => void;
   setUnitSystem: (u: UnitSystem) => void;
   setColumnProfile: (p: SteelProfile) => void;
   setAnchorChair: (a: AnchorChair) => void;
-  setStiffeners: (s: StiffenerConfig) => void;
   onOpenReport: () => void;
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({ 
-  plate, bolts, loads, unitSystem, columnProfile, anchorChair, stiffeners,
-  updatePlate, updateBolts, updateLoads, setUnitSystem, setColumnProfile, setAnchorChair, setStiffeners,
+  plate, bolts, loads, unitSystem, columnProfile, anchorChair,
+  updatePlate, updateBolts, updateLoads, setUnitSystem, setColumnProfile, setAnchorChair,
   onOpenReport
 }) => {
   const handleProfileChange = (profileName: string) => {
@@ -156,44 +154,14 @@ export const Sidebar: React.FC<SidebarProps> = ({
                     <Input label="e (mm)" value={anchorChair.thickness} onChange={(v) => setAnchorChair({ ...anchorChair, thickness: v })} min={5} />
                     <Input label="w (mm)" value={anchorChair.width} onChange={(v) => setAnchorChair({ ...anchorChair, width: v })} />
                 </div>
-             </div>
-          )}
-        </div>
-
-        {/* Atiesadores */}
-        <div className="space-y-4">
-          <label className="text-[10px] text-gray-400 uppercase font-bold flex items-center justify-between">
-            Atiesadores
-            <input 
-              type="checkbox" 
-              checked={stiffeners.enabled} 
-              onChange={(e) => setStiffeners({ ...stiffeners, enabled: e.target.checked })}
-              className="accent-blue-600 rounded cursor-pointer"
-            />
-          </label>
-          
-          {stiffeners.enabled && (
-             <div className="p-3 bg-slate-50 rounded border border-slate-100 space-y-3">
-                <div className="space-y-2">
-                   <label className="text-[9px] text-gray-400 uppercase font-bold tracking-tighter">Distribución</label>
-                   <select 
-                    className="w-full border border-gray-200 rounded p-1.5 text-[10px] bg-white font-medium"
-                    value={stiffeners.position}
-                    onChange={(e) => setStiffeners({ ...stiffeners, position: e.target.value as any })}
-                   >
-                     <option value="INNER">Interiores</option>
-                     <option value="OUTER">Exteriores</option>
-                     <option value="FACES">En Caras</option>
-                   </select>
-                </div>
-                <div className="grid grid-cols-2 gap-2">
-                  <Input label="e (mm)" value={stiffeners.thickness} onChange={(v) => setStiffeners({ ...stiffeners, thickness: v })} min={5} />
-                  <Input label="h (mm)" value={stiffeners.height} onChange={(v) => setStiffeners({ ...stiffeners, height: v })} min={10} />
+                <div className="text-[8px] text-blue-500/70 italic font-medium leading-tight border-t border-blue-100/50 pt-2 mt-1">
+                  ✓ La silla incluye stiffeners integrados en cada perno de anclaje
                 </div>
              </div>
           )}
         </div>
 
+        {/* Botón Memoria */}
         <button 
           onClick={onOpenReport}
           className="w-full py-4 bg-slate-900 text-white rounded-lg text-[10px] font-bold uppercase tracking-[0.2em] hover:bg-black transition-all shadow-xl active:scale-95 flex items-center justify-center gap-2"

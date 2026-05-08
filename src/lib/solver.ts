@@ -1,7 +1,7 @@
-import { BasePlate, BoltConfiguration, Loads, CalculationResult, UnitSystem, AnchorChair, StiffenerConfig } from "../types";
+import { BasePlate, BoltConfiguration, Loads, CalculationResult, UnitSystem, AnchorChair } from "../types";
 
 /**
- * CBFEM Phase 5 Global Solver (Advanced Analysis + Stiffeners)
+ * CBFEM Phase 5 Global Solver (Advanced Analysis)
  */
 const TONF_TO_N = 9806.65;
 const TONFM_TO_NMM = 9806650;
@@ -15,7 +15,6 @@ export function calculateResults(
   unitSystem: UnitSystem,
   columnHeight: number,
   chair: AnchorChair,
-  stiffeners: StiffenerConfig, // Added
   concreteFc: number = 25
 ): CalculationResult {
   // 1. Unified SI Conversion (N, mm)
@@ -56,9 +55,6 @@ export function calculateResults(
   if (chair.enabled) {
     maxTension_N *= 0.8; 
     stiffnessBoost *= 1.5;
-  }
-  if (stiffeners.enabled) {
-    stiffnessBoost *= 1.3;
   }
 
   // 4. Plate Stresses
@@ -117,7 +113,6 @@ export function calculateWithCombo(
   unitSystem: UnitSystem,
   columnHeight: number,
   chair: AnchorChair,
-  stiffeners: StiffenerConfig,
   combo: { factors: { dead: number; live: number; equipment: number; seismic: number } },
   concreteFc: number = 25
 ): CalculationResult {
@@ -129,5 +124,5 @@ export function calculateWithCombo(
     vx: loads.vx * sumFactor,
     vy: loads.vy * sumFactor,
   };
-  return calculateResults(plate, bolts, factored, unitSystem, columnHeight, chair, stiffeners, concreteFc);
+  return calculateResults(plate, bolts, factored, unitSystem, columnHeight, chair, concreteFc);
 }

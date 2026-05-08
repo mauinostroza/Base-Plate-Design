@@ -1,5 +1,5 @@
 import React from 'react';
-import { CalculationResult, BasePlate, BoltConfiguration, ConcreteData, Loads, SteelProfile, AnchorChair, StiffenerConfig } from '../types';
+import { CalculationResult, BasePlate, BoltConfiguration, ConcreteData, Loads, SteelProfile, AnchorChair } from '../types';
 
 interface ReportViewProps {
   plate: BasePlate;
@@ -9,12 +9,11 @@ interface ReportViewProps {
   results: CalculationResult;
   columnProfile: SteelProfile;
   anchorChair: AnchorChair;
-  stiffeners: StiffenerConfig;
   onClose: () => void;
 }
 
 export const ReportView: React.FC<ReportViewProps> = ({ 
-  plate, bolts, concrete, loads, results, columnProfile, anchorChair, stiffeners, onClose 
+  plate, bolts, concrete, loads, results, columnProfile, anchorChair, onClose 
 }) => {
   const isPass = results.summary.status === 'pass';
 
@@ -169,7 +168,7 @@ export const ReportView: React.FC<ReportViewProps> = ({
                            </span>
                         </div>
                         <p className="text-[10px] text-slate-500 leading-relaxed italic">
-                           *Basado en el método de los componentes (Eurocódigo 3). La inclusión de {anchorChair.enabled ? 'Silla de Anclaje' : 'Atiesadores'} aumenta significativamente el brazo de palanca efectivo.
+                           *Basado en el método de los componentes (Eurocódigo 3). La Silla de Anclaje incluye stiffeners integrados, aumentando significativamente el brazo de palanca efectivo.
                         </p>
                      </div>
                   </div>

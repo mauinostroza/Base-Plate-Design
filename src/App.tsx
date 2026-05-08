@@ -3,7 +3,7 @@ import { Sidebar } from './components/Sidebar';
 import { ThreeView } from './components/ThreeView';
 import { ResultsPanel } from './components/ResultsPanel';
 import { ReportView } from './components/ReportView';
-import { BasePlate, BoltConfiguration, Loads, STEEL_GRADES, UnitSystem, SteelProfile, AnchorChair, StiffenerConfig } from './types';
+import { BasePlate, BoltConfiguration, Loads, STEEL_GRADES, UnitSystem, SteelProfile, AnchorChair } from './types';
 import { calculateResults } from './lib/solver';
 
 export default function App() {
@@ -22,14 +22,6 @@ export default function App() {
     thickness: 12,
     width: 80,
     position: "WING_FACES"
-  });
-
-  const [stiffeners, setStiffeners] = useState<StiffenerConfig>({
-    enabled: false,
-    count: 2,
-    thickness: 10,
-    height: 200,
-    position: "INNER"
   });
 
   const [plate, setPlate] = useState<BasePlate>({
@@ -60,8 +52,8 @@ export default function App() {
   });
 
   const results = useMemo(() => 
-    calculateResults(plate, bolts, loads, unitSystem, columnProfile.h, anchorChair, stiffeners), 
-    [plate, bolts, loads, unitSystem, columnProfile.h, anchorChair, stiffeners]
+    calculateResults(plate, bolts, loads, unitSystem, columnProfile.h, anchorChair), 
+    [plate, bolts, loads, unitSystem, columnProfile.h, anchorChair]
   );
 
   return (
@@ -102,8 +94,6 @@ export default function App() {
           setColumnProfile={setColumnProfile}
           anchorChair={anchorChair}
           setAnchorChair={setAnchorChair}
-          stiffeners={stiffeners}
-          setStiffeners={setStiffeners}
           onOpenReport={() => setIsReportOpen(true)}
         />
         
@@ -114,7 +104,6 @@ export default function App() {
               concrete={{ fck: 25, width: 800, height: 800, depth: 1000 }}
               columnProfile={columnProfile}
               anchorChair={anchorChair}
-              stiffeners={stiffeners}
               stressData={Math.min(results.plateUtilization / 100, 1)} 
            />
         </section>
@@ -147,7 +136,6 @@ export default function App() {
           results={results} 
           columnProfile={columnProfile}
           anchorChair={anchorChair}
-          stiffeners={stiffeners}
           onClose={() => setIsReportOpen(false)} 
         />
       )}

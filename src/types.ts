@@ -47,8 +47,7 @@ export interface Loads {
   vy: number; 
 }
 
-export type AnchorChairPosition = "WING_FACES" | "INTERIOR" | "FULL";
-export type StiffenerPosition = "OUTER" | "INNER" | "FACES";
+export type AnchorChairPosition = "WING_FACES" | "INTERIOR" | "FULL" | "NONE";
 
 export interface AnchorChair {
   enabled: boolean;
@@ -56,14 +55,6 @@ export interface AnchorChair {
   thickness: number; 
   width: number;
   position: AnchorChairPosition; // New
-}
-
-export interface StiffenerConfig {
-  enabled: boolean;
-  count: number;
-  thickness: number;
-  height: number;
-  position: StiffenerPosition;
 }
 
 export interface CalculationResult {
